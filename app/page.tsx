@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { Terminal, Shield, Lock, Cpu, Zap, Globe, Share2, Activity, ShieldAlert } from 'lucide-react';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { Terminal, Shield, Lock, Cpu, Zap, Globe, Share2, Activity, ShieldAlert, X, FileText, LockKeyhole, AlertTriangle } from 'lucide-react';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,8 +13,13 @@ export default function FinalPremiumCTF() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [status, setStatus] = useState('');
   const [mounted, setMounted] = useState(false);
-  const [isTyping, setIsTyping] = useState(false); // NEW: Interaction State
+  const [isTyping, setIsTyping] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
+  
+  // Modal States
+  const [showTerms, setShowTerms] = useState(false);
+  const [hasReadToBottom, setHasReadToBottom] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Mouse Glow Logic
   const mouseX = useMotionValue(0);
@@ -46,8 +51,24 @@ export default function FinalPremiumCTF() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Scroll detection to unlock buttons
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      // Triggers when user is within 10px of the bottom
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        setHasReadToBottom(true);
+      }
+    }
+  };
+
+  const handleInitialSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowTerms(true);
+  };
+
+  const handleAccept = async () => {
+    setShowTerms(false);
     setStatus('ESTABLISHING_ENCRYPTED_UPLINK...');
     const { error } = await supabase.from('registrations').insert([formData]);
     if (error) setStatus('UPLINK_ERROR: SECURE_PIPE_FAILED');
@@ -58,71 +79,25 @@ export default function FinalPremiumCTF() {
   };
 
   if (!mounted) return null;
-
   const icons = [Terminal, Shield, Lock, Cpu, Zap, Globe, Share2, Activity];
 
   return (
     <main className="min-h-screen bg-[#05080a] text-[#9feaf9] font-mono flex items-center justify-center relative overflow-hidden p-6 lg:p-12">
       
-      {/* 1. INTERACTIVE MOUSE GLOW */}
-      <motion.div 
-        className="pointer-events-none fixed inset-0 z-10 opacity-50"
-        style={{
-          background: `radial-gradient(600px circle at ${springX}px ${springY}px, rgba(159, 234, 249, 0.08), transparent 80%)`,
-        }}
-      />
+      {/* BACKGROUND EFFECTS */}
+      <motion.div className="pointer-events-none fixed inset-0 z-10 opacity-50" style={{ background: `radial-gradient(600px circle at ${springX}px ${springY}px, rgba(159, 234, 249, 0.08), transparent 80%)` }} />
+      <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: `linear-gradient(#9feaf9 1px, transparent 1px), linear-gradient(90deg, #9feaf9 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
 
-      {/* 2. GLOBAL BACKGROUND GRID */}
-      <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" 
-           style={{ backgroundImage: `linear-gradient(#9feaf9 1px, transparent 1px), linear-gradient(90deg, #9feaf9 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
-
-      {/* 3. UNIVERSAL FLOATING ICONS */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        {icons.map((Icon, i) => (
-          <motion.div
-            key={i}
-            initial={{ x: `${(i * 100) / icons.length}vw`, y: "110vh" }}
-            animate={{ 
-              y: "-10vh",
-              rotate: 360,
-              x: [`${(i * 100) / icons.length}vw`, `${((i * 100) / icons.length) + (i % 2 === 0 ? 8 : -8)}vw`] 
-            }}
-            transition={{ duration: 18 + i * 4, repeat: Infinity, ease: "linear" }}
-            className="absolute text-[#9feaf9] opacity-20 blur-[0.5px] drop-shadow-[0_0_10px_#9feaf9]"
-          >
-            <Icon size={40 + i * 12} />
-          </motion.div>
-        ))}
-      </div>
-
-      {/* 4. MAIN SIDE-BY-SIDE CONTAINER */}
+      {/* SIDE-BY-SIDE INTERFACE */}
       <div className="z-20 flex flex-col lg:flex-row items-stretch gap-12 max-w-7xl w-full">
         
-        {/* LEFT: THE BRAND CARD */}
-        <motion.div 
-          initial={{ opacity: 0, x: -40 }} 
-          animate={{ opacity: 1, x: 0 }}
-          className="flex-1"
-        >
+        {/* REGISTRATION FORM (LEFT) */}
+        <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} className="flex-1">
           <div className="bg-[#0b0e14]/85 backdrop-blur-3xl border border-[#9feaf9]/30 rounded-[2.5rem] p-12 relative shadow-[0_0_100px_rgba(0,0,0,0.5)] h-full">
-            <motion.div 
-              animate={{ y: ["0vh", "80vh"] }} 
-              transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-              className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#9feaf9]/40 to-transparent z-10"
-            />
-
             <div className="flex justify-between items-start mb-14">
               <div>
-                <h1 className="text-7xl font-black italic tracking-tighter uppercase text-white leading-none">
-                  CTF<span className="text-[#9feaf9]">.26</span>
-                </h1>
-                <motion.p 
-                  animate={{ opacity: [1, 0.4, 1] }} 
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                  className="text-[10px] tracking-[0.6em] text-[#9feaf9] mt-4 font-bold uppercase"
-                >
-                  {">"} UPLINK STATUS: SECURE
-                </motion.p>
+                <h1 className="text-7xl font-black italic tracking-tighter uppercase text-white leading-none">CTF<span className="text-[#9feaf9]">.26</span></h1>
+                <p className="text-[10px] tracking-[0.6em] text-[#9feaf9] mt-4 font-bold uppercase">{">"} UPLINK STATUS: SECURE</p>
               </div>
               <div className="p-4 bg-[#9feaf9]/5 rounded-2xl border border-[#9feaf9]/20">
                 <Activity className="text-[#9feaf9] animate-pulse" size={36} />
@@ -138,42 +113,17 @@ export default function FinalPremiumCTF() {
               ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <input 
-                onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)}
-                required placeholder="OPERATOR_ALIAS"
-                className="w-full bg-black/40 border border-[#9feaf9]/20 p-6 rounded-2xl outline-none focus:border-[#9feaf9] focus:bg-[#9feaf9]/5 transition-all text-white uppercase tracking-widest text-sm"
-                value={formData.name}
-                onChange={e => setFormData({...formData, name: e.target.value})}
-              />
-              <input 
-                onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)}
-                required type="email" placeholder="SECURE_EMAIL_V4"
-                className="w-full bg-black/40 border border-[#9feaf9]/20 p-6 rounded-2xl outline-none focus:border-[#9feaf9] focus:bg-[#9feaf9]/5 transition-all text-white text-sm"
-                value={formData.email}
-                onChange={e => setFormData({...formData, email: e.target.value})}
-              />
-              <input 
-                onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)}
-                required placeholder="ENCRYPTED_COMMS_LINE"
-                className="w-full bg-black/40 border border-[#9feaf9]/20 p-6 rounded-2xl outline-none focus:border-[#9feaf9] focus:bg-[#9feaf9]/5 transition-all text-white text-sm"
-                value={formData.phone}
-                onChange={e => setFormData({...formData, phone: e.target.value})}
-              />
-              <motion.button 
-                whileHover={{ scale: 1.02, backgroundColor: "#fff" }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full bg-[#9feaf9] text-black font-black py-7 rounded-2xl uppercase tracking-[0.4em] text-xs shadow-[0_20px_40px_rgba(159,234,249,0.2)] transition-all"
-              >
-                Initialize Connection
-              </motion.button>
+            <form onSubmit={handleInitialSubmit} className="space-y-6">
+              <input onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required placeholder="OPERATOR_ALIAS" className="w-full bg-black/40 border border-[#9feaf9]/20 p-6 rounded-2xl outline-none focus:border-[#9feaf9] transition-all text-white uppercase tracking-widest text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+              <input onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required type="email" placeholder="SECURE_EMAIL_V4" className="w-full bg-black/40 border border-[#9feaf9]/20 p-6 rounded-2xl outline-none focus:border-[#9feaf9] transition-all text-white text-sm" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+              <input onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required placeholder="ENCRYPTED_COMMS_LINE" className="w-full bg-black/40 border border-[#9feaf9]/20 p-6 rounded-2xl outline-none focus:border-[#9feaf9] transition-all text-white text-sm" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+              <motion.button whileHover={{ scale: 1.02, backgroundColor: "#fff" }} whileTap={{ scale: 0.98 }} className="w-full bg-[#9feaf9] text-black font-black py-7 rounded-2xl uppercase tracking-[0.4em] text-xs shadow-[0_20px_40px_rgba(159,234,249,0.2)] transition-all">Initialize Connection</motion.button>
             </form>
-            {status && <p className="mt-8 text-center text-[10px] animate-pulse font-bold tracking-[0.5em] text-white/80">{`> ${status}`}</p>}
           </div>
         </motion.div>
 
-        {/* RIGHT: CHALLENGE RULES BOX */}
-        <motion.div 
+        {/* RULES PREVIEW (RIGHT) */}
+              <motion.div 
           initial={{ opacity: 0, x: 40 }}
           animate={{ 
             opacity: 1, x: 0,
@@ -219,12 +169,74 @@ export default function FinalPremiumCTF() {
         </motion.div>
       </div>
 
-      {/* FOOTER STRIP */}
-      <div className="fixed bottom-8 flex gap-16 text-[9px] tracking-[0.5em] opacity-20 font-black uppercase z-10 text-white">
-        <span>Global_Offensive</span>
-        <span>Node_04.X</span>
-        <span>Secure_Protocol</span>
-      </div>
+
+      {/* TERMS MODAL (SCROLL-TO-UNLOCK) */}
+      <AnimatePresence>
+        {showTerms && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-[#0b0e14] border border-[#9feaf9]/40 w-full max-w-2xl rounded-[2.5rem] overflow-hidden flex flex-col max-h-[80vh]">
+              
+              <div className="p-8 border-b border-[#9feaf9]/10 flex items-center justify-between bg-[#9feaf9]/5">
+                <div className="flex items-center gap-4 text-[#9feaf9]"><FileText size={24} /><h3 className="text-xl font-black italic uppercase tracking-tighter">Code_of_Conduct_v1.0</h3></div>
+                <button onClick={() => setShowTerms(false)} className="text-[#9feaf9]/40 hover:text-[#9feaf9]"><X size={24} /></button>
+              </div>
+
+              <div ref={scrollRef} onScroll={handleScroll} className="p-10 overflow-y-auto space-y-8 text-[#9feaf9]/70 text-sm font-bold leading-relaxed custom-scrollbar">
+                
+                <section className="space-y-4">
+                  <h4 className="text-white tracking-[0.3em] text-xs">A. INTEGRITY & FAIR PLAY</h4>
+                  <ul className="space-y-2 list-disc pl-4 text-xs">
+                    <li>No sharing flags or solutions.</li>
+                    <li>No unauthorized collaboration.</li>
+                    <li>No brute-forcing or automated solving tools.</li>
+                    <li>No reverse engineering the platform.</li>
+                  </ul>
+                </section>
+
+                <section className="space-y-4">
+                  <h4 className="text-white tracking-[0.3em] text-xs">B. PLATFORM USAGE</h4>
+                  <ul className="space-y-2 list-disc pl-4 text-xs">
+                    <li>Do not exploit bugs in the CTF7 platform.</li>
+                    <li>Maintain account security at all times.</li>
+                    <li>Comply with challenge-specific guidelines.</li>
+                  </ul>
+                </section>
+
+                <section className="space-y-4">
+                  <h4 className="text-white tracking-[0.3em] text-xs">C. COMMUNITY ENGAGEMENT</h4>
+                  <ul className="space-y-2 list-disc pl-4 text-xs">
+                    <li>Treat all participants and organizers with respect.</li>
+                    <li>Zero tolerance for harassment or discrimination.</li>
+                    <li>No inappropriate or offensive content.</li>
+                  </ul>
+                </section>
+
+                <section className="space-y-4">
+                  <h4 className="text-white tracking-[0.3em] text-xs">D. PENALTIES</h4>
+                  <p className="text-[11px] opacity-80 italic">Violations may lead to disqualification, bans from future events, prize forfeiture, and legal reporting. All decisions by organizers are final.</p>
+                </section>
+
+                <div className="p-4 border border-red-500/20 bg-red-500/5 rounded-xl flex items-start gap-4 text-red-400">
+                  <AlertTriangle size={20} className="flex-shrink-0" /><p className="text-[10px] uppercase font-black">Warning: Decisions on conduct are final and binding.</p>
+                </div>
+              </div>
+
+              <div className="p-8 border-t border-[#9feaf9]/10 bg-black flex gap-4">
+                <button onClick={() => setShowTerms(false)} className="flex-1 py-4 border border-[#9feaf9]/20 rounded-xl text-[#9feaf9]/40 uppercase tracking-widest text-[10px] font-black">Decline</button>
+                <motion.button disabled={!hasReadToBottom} onClick={handleAccept} className={`flex-[2] py-4 rounded-xl flex items-center justify-center gap-3 uppercase tracking-widest text-[10px] font-black transition-all ${hasReadToBottom ? 'bg-[#9feaf9] text-black shadow-[0_0_30px_rgba(159,234,249,0.4)]' : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'}`}>
+                  {!hasReadToBottom && <LockKeyhole size={14} />}{hasReadToBottom ? 'Agree & Connect' : 'Scroll to Unlock Rules'}
+                </motion.button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(159, 234, 249, 0.05); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(159, 234, 249, 0.3); border-radius: 10px; }
+      `}</style>
     </main>
   );
 }
