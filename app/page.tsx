@@ -68,15 +68,28 @@ export default function FinalPremiumCTF() {
   };
 
   const handleAccept = async () => {
-    setShowTerms(false);
-    setStatus('ESTABLISHING_ENCRYPTED_UPLINK...');
-    const { error } = await supabase.from('registrations').insert([formData]);
-    if (error) setStatus('UPLINK_ERROR: SECURE_PIPE_FAILED');
-    else {
-      setStatus('SUCCESS: NODE_REGISTERED_IN_MAINFRAME');
-      setFormData({ name: '', email: '', phone: '' });
+  setShowTerms(false);
+  setStatus('SENDING_VERIFICATION_PACKET...');
+
+  // This initiates the Supabase Auth process and sends the confirmation email
+  const { data, error } = await supabase.auth.signUp({
+    email: formData.email,
+    password: 'CTF_SECURE_PASS_2026', // System requirement; users won't need to know this
+    options: {
+      data: {
+        alias: formData.name, // The database trigger will look for this key
+        phone: formData.phone  // The database trigger will look for this key
+      }
     }
-  };
+  });
+
+  if (error) {
+    setStatus(`UPLINK_ERROR: ${error.message}`);
+  } else {
+    // This confirms to the operator that they must check their inbox
+    setStatus('UPLINK_PENDING: CHECK_YOUR_INBOX_TO_CONFIRM');
+  }
+};
 
   if (!mounted) return null;
   const icons = [Terminal, Shield, Lock, Cpu, Zap, Globe, Share2, Activity];
