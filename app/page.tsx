@@ -33,7 +33,7 @@ export default function FinalPremiumCTF() {
   }, [mouseX, mouseY]);
 
   useEffect(() => {
-    const target = new Date('February 28, 2026 23:59:59').getTime();
+    const target = new Date('January 31, 2026 5:59:59').getTime();
     const interval = setInterval(() => {
       const diff = target - new Date().getTime();
       setTimeLeft({
