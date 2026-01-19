@@ -126,9 +126,9 @@ export default function FinalPremiumCTF() {
               </div>
 
               <form onSubmit={handleInitialSubmit} className="space-y-6">
-                <input onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required placeholder="OPERATOR_ALIAS" className="w-full bg-black/40 border border-[#a586ff]/20 p-6 rounded-2xl outline-none focus:border-[#a586ff] transition-all text-white uppercase tracking-widest text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-                <input onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required type="email" placeholder="SECURE_EMAIL_V4" className="w-full bg-black/40 border border-[#a586ff]/20 p-6 rounded-2xl outline-none focus:border-[#a586ff] transition-all text-white text-sm" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-                <input onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required placeholder="ENCRYPTED_COMMS_LINE" className="w-full bg-black/40 border border-[#a586ff]/20 p-6 rounded-2xl outline-none focus:border-[#a586ff] transition-all text-white text-sm" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                <input onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required placeholder="Username" className="w-full bg-black/40 border border-[#a586ff]/20 p-6 rounded-2xl outline-none focus:border-[#a586ff] transition-all text-white uppercase tracking-widest text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                <input onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required type="email" placeholder="Email Address" className="w-full bg-black/40 border border-[#a586ff]/20 p-6 rounded-2xl outline-none focus:border-[#a586ff] transition-all text-white text-sm" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                <input onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required placeholder="Phone Number" className="w-full bg-black/40 border border-[#a586ff]/20 p-6 rounded-2xl outline-none focus:border-[#a586ff] transition-all text-white text-sm" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
                 <motion.button whileHover={{ scale: 1.02, backgroundColor: "#fff", color: "#000" }} whileTap={{ scale: 0.98 }} className="w-full bg-[#a586ff] text-white font-black py-7 rounded-2xl uppercase tracking-[0.4em] text-xs shadow-[0_20px_40px_rgba(165,134,255,0.2)] transition-all">Initialize Connection</motion.button>
               </form>
             </div>
@@ -253,3 +253,5 @@ export default function FinalPremiumCTF() {
     </main>
   );
 }
+
+
