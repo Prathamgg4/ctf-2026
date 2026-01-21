@@ -1,9 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  /* Updated to match the Purple/Blue Gradient scheme */
   --background: #050014;
-  --foreground: #a586ff; /* Glowing Purple */
+  --foreground: #a586ff;
 }
 
 @theme inline {
@@ -13,24 +12,21 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Force dark mode colors regardless of system settings for CTF vibe */
 body {
-  background: radial-gradient(circle at center, #1a0b3c 0%, #050014 100%);
+  /* Fixed background prevents 'jumping' during mobile scrolls */
+  background: radial-gradient(circle at center, #1a0b3c 0%, #050014 100%) fixed;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Custom scrollbar for the Terms Modal to match the theme */
-.custom-scrollbar::-webkit-scrollbar { 
-  width: 4px; 
-}
+/* Branded scrollbar for the Terms modal */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(165, 134, 255, 0.05); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(165, 134, 255, 0.3); border-radius: 10px; }
 
-.custom-scrollbar::-webkit-scrollbar-track { 
-  background: rgba(165, 134, 255, 0.05); 
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb { 
-  background: rgba(165, 134, 255, 0.3); 
-  border-radius: 10px; 
+@media (max-width: 768px) {
+  body { background: #050014; } /* Performance boost for older phones */
 }
