@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@supabase/supabase-js": "^2.90.1",
     "framer-motion": "^12.26.2",
     "lucide-react": "^0.562.0",
