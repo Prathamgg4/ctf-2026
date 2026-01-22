@@ -67,7 +67,6 @@ export default function FinalPremiumCTF() {
     setShowTerms(true);
   };
 
-  // FIXED: Single clean handleAccept function with your specific Template parameters
   const handleAccept = async () => {
     setShowTerms(false);
     setStatus('DISPATCHING_PACKET...');
@@ -75,9 +74,8 @@ export default function FinalPremiumCTF() {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedOtp(otp);
 
-    // Matches your EmailJS Dashboard: {{to_email}} and {{verification_code}}
     const templateParams = {
-      to_email: formData.email,
+      to_email: formData.email, // Updated to match your Dashboard
       verification_code: otp,
     };
 
@@ -206,7 +204,7 @@ export default function FinalPremiumCTF() {
           <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl">
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-[#0b0e14] border-2 border-green-500/50 p-8 lg:p-12 rounded-[2rem] lg:rounded-[3rem] max-w-md w-full text-center shadow-[0_0_80px_rgba(34,197,94,0.2)]">
               <div className="flex justify-center mb-8"><div className="p-5 bg-green-500/10 rounded-full border border-green-500/30"><ShieldCheck className="text-green-500 animate-bounce" size={56} /></div></div>
-              <h3 className="text-3xl font-black italic uppercase text-white mb-6">Uplink Verified</h3>
+              <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-6">Uplink Verified</h3>
               <p className="text-green-500/70 text-[11px] lg:text-sm font-bold leading-relaxed mb-10 uppercase tracking-widest">Identity confirmed. Your info has been synchronized with the HACK-X database.</p>
               <button onClick={handleReset} className="w-full bg-green-500 text-black font-black py-5 rounded-2xl uppercase tracking-[0.3em] text-[10px] lg:text-xs hover:bg-white transition-all">Enter Terminal</button>
             </motion.div>
@@ -223,6 +221,8 @@ export default function FinalPremiumCTF() {
                 <button onClick={() => setShowTerms(false)} className="text-[#a586ff]/40 hover:text-[#a586ff]"><X size={24} /></button>
               </div>
               <div ref={scrollRef} onScroll={handleScroll} className="p-6 lg:p-10 overflow-y-auto space-y-10 text-[#a586ff]/70 text-[11px] lg:text-sm font-bold leading-relaxed custom-scrollbar">
+                
+                {/* SECTION A */}
                 <section className="space-y-4">
                   <h4 className="text-white tracking-[0.3em] text-[10px] lg:text-xs uppercase underline font-black">A. Integrity & Fair Play</h4>
                   <ul className="space-y-3 list-disc pl-5 opacity-80">
@@ -232,19 +232,40 @@ export default function FinalPremiumCTF() {
                     <li>Attempting to reverse engineer the competition platform will result in a ban.</li>
                   </ul>
                 </section>
+
+                {/* SECTION B */}
                 <section className="space-y-4">
                   <h4 className="text-white tracking-[0.3em] text-[10px] lg:text-xs uppercase underline font-black">B. Platform Usage</h4>
                   <ul className="space-y-3 list-disc pl-5 opacity-80">
                     <li>Do not attempt to exploit vulnerabilities in the CTF7 platform itself.</li>
-                    <li>Operators are responsible for securing their own credentials.</li>
+                    <li>Operators are responsible for securing their own login credentials.</li>
+                    <li>Compliance with specific rules for individual challenges is mandatory.</li>
                   </ul>
                 </section>
+
+                {/* SECTION C */}
+                <section className="space-y-4">
+                  <h4 className="text-white tracking-[0.3em] text-[10px] lg:text-xs uppercase underline font-black">C. Community Engagement</h4>
+                  <ul className="space-y-3 list-disc pl-5 opacity-80">
+                    <li>Treat all participants, organizers, and sponsors with respect and courtesy.</li>
+                    <li>Harassment, discrimination, or hate speech will not be tolerated.</li>
+                    <li>Posting inappropriate or offensive content is cause for immediate removal.</li>
+                  </ul>
+                </section>
+
+                {/* SECTION D */}
+                <section className="space-y-4">
+                  <h4 className="text-white tracking-[0.3em] text-[10px] lg:text-xs uppercase underline font-black">D. Penalties</h4>
+                  <p className="italic leading-loose opacity-80">Violations may lead to disqualification, permanent bans, and legal reporting. All decisions made by the organizing committee are final and binding.</p>
+                </section>
+
                 <div className="p-4 border border-red-500/20 bg-red-500/5 rounded-xl flex items-start gap-4 text-red-400">
-                  <AlertTriangle size={18} className="flex-shrink-0" /><p className="text-[9px] lg:text-[10px] uppercase font-black tracking-widest">Organizer decisions are final.</p>
+                  <AlertTriangle size={18} className="flex-shrink-0" />
+                  <p className="text-[9px] lg:text-[10px] uppercase font-black tracking-widest">Organizer decisions are final.</p>
                 </div>
               </div>
               <div className="p-6 lg:p-8 border-t border-[#a586ff]/10 bg-black flex gap-3 lg:gap-4">
-                <button onClick={() => setShowTerms(false)} className="flex-1 py-4 border border-[#a586ff]/20 rounded-xl text-[#a586ff]/40 uppercase text-[9px] font-black tracking-widest">Decline</button>
+                <button onClick={() => setShowTerms(false)} className="flex-1 py-4 border border-[#a586ff]/20 rounded-xl text-[#a586ff]/40 uppercase text-[9px] lg:text-[10px] font-black tracking-widest">Decline</button>
                 <motion.button disabled={!hasReadToBottom} onClick={handleAccept} className={`flex-[2] py-4 rounded-xl flex items-center justify-center gap-3 uppercase text-[9px] lg:text-[10px] font-black transition-all ${hasReadToBottom ? 'bg-[#a586ff] text-black shadow-[0_0_30px_rgba(165,134,255,0.4)]' : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'}`}>
                   {!hasReadToBottom && <LockKeyhole size={14} />} {hasReadToBottom ? 'Agree & Connect' : 'Scroll to Unlock'}
                 </motion.button>
