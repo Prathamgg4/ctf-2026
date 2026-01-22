@@ -42,7 +42,7 @@ export default function FinalPremiumCTF() {
   }, [mouseX, mouseY]);
 
   useEffect(() => {
-    const target = new Date('February 28, 2026 00:00:00').getTime();
+    const target = new Date('January 28, 2026 05:00:00').getTime();
     const interval = setInterval(() => {
       const diff = target - new Date().getTime();
       setTimeLeft({
