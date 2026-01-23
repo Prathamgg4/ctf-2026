@@ -146,7 +146,7 @@ export default function FinalPremiumCTF() {
             <div className="bg-[#0b0e14]/90 backdrop-blur-3xl border border-[#a586ff]/30 rounded-[1.5rem] lg:rounded-[2.5rem] p-6 lg:p-12 relative shadow-[0_0_100px_rgba(0,0,0,0.8)] h-full">
               <div className="flex justify-between items-start mb-10 lg:mb-14">
                 <div>
-                  <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black italic tracking-tighter text-white leading-none uppercase">CYBERLOCK<span className="text-[#a586ff]">.26</span></h1>
+                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black italic tracking-tighter text-white leading-none uppercase">CYBERLOCK<span className="text-[#a586ff]">.26</span></h1>
                   <p className="text-[8px] lg:text-[10px] tracking-[0.4em] text-[#a586ff] mt-4 font-bold uppercase">{">"} UPLINK STATUS: SECURE</p>
                 </div>
                 <div className="p-3 lg:p-4 bg-[#a586ff]/5 rounded-xl lg:rounded-2xl border border-[#a586ff]/20"><Activity className="text-[#a586ff] animate-pulse" size={24} /></div>
