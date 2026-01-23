@@ -169,13 +169,32 @@ export default function FinalPremiumCTF() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0, borderColor: isTyping ? "rgba(165, 134, 255, 0.7)" : "rgba(165, 134, 255, 0.2)", boxShadow: isTyping ? "0 0 50px rgba(165, 134, 255, 0.2)" : "none" }} className="w-full lg:w-[450px] bg-[#0b0e14]/90 backdrop-blur-3xl border rounded-[1.5rem] lg:rounded-[2.5rem] p-8 lg:p-12 flex flex-col transition-all duration-500">
-            <h2 className="text-2xl lg:text-3xl font-black text-white mb-8 flex items-center gap-4 italic uppercase tracking-tighter"><ShieldAlert className="text-[#a586ff]" size={28} /> Rules</h2>
-            <div className="space-y-6 lg:space-y-10">
-              <div className="flex gap-4 lg:gap-6 group"><span className="flex-shrink-0 w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl bg-[#a586ff]/5 border border-[#a586ff]/20 flex items-center justify-center text-[#a586ff] font-black group-hover:bg-[#a586ff] group-hover:text-black transition-all">1</span><p className="text-[#a586ff]/60 text-[10px] lg:text-xs leading-relaxed font-bold uppercase tracking-wider">Challenges are worth dynamic points based on difficulty.</p></div>
-              <div className="flex gap-4 lg:gap-6 group"><span className="flex-shrink-0 w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl bg-[#a586ff]/5 border border-[#a586ff]/20 flex items-center justify-center text-[#a586ff] font-black group-hover:bg-[#a586ff] group-hover:text-black transition-all">2</span><p className="text-[#a586ff]/60 text-[10px] lg:text-xs leading-relaxed font-bold uppercase italic tracking-wider">Infrastructure tampering results in instant perma-ban.</p></div>
+          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0, borderColor: isTyping ? "rgba(165, 134, 255, 0.7)" : "rgba(165, 134, 255, 0.2)", boxShadow: isTyping ? "0 0 50px rgba(165, 134, 255, 0.2)" : "none" }} className="w-full lg:w-[450px] bg-[#0b0e14]/90 backdrop-blur-3xl border rounded-[1.5rem] lg:rounded-[2.5rem] p-8 lg:p-12 flex flex-col transition-all duration-500 overflow-y-auto custom-scrollbar">
+            <h2 className="text-2xl lg:text-3xl font-black text-white mb-8 flex items-center gap-4 italic uppercase tracking-tighter flex-shrink-0"><ShieldAlert className="text-[#a586ff]" size={28} /> Rules</h2>
+            <div className="space-y-4 lg:space-y-5">
+              {[
+                "No DoS/DDoS attacks against the platform or other players.",
+                "Sharing flags or solutions is strictly prohibited.",
+                "Brute-forcing flags on the submission server is not allowed.",
+                "No social engineering attacks against organizers or participants.",
+                "One account per person; team size must not exceed the limit.",
+                "The decisions of the HACK-X organizers are final.",
+                "Respect the infrastructure; no destructive payloads.",
+                "Flags must be submitted in the specified format.",
+                "Any form of cheating will result in immediate disqualification.",
+                "Have fun and keep the competition professional and ethical."
+              ].map((rule, idx) => (
+                <div key={idx} className="flex gap-4 group">
+                  <span className="flex-shrink-0 w-6 h-6 lg:w-8 lg:h-8 rounded-lg bg-[#a586ff]/5 border border-[#a586ff]/20 flex items-center justify-center text-[#a586ff] font-black text-[10px] lg:text-xs group-hover:bg-[#a586ff] group-hover:text-black transition-all">
+                    {idx + 1}
+                  </span>
+                  <p className="text-[#a586ff]/60 text-[9px] lg:text-[11px] leading-relaxed font-bold uppercase tracking-wider">
+                    {rule}
+                  </p>
+                </div>
+              ))}
             </div>
-            <div className="mt-auto pt-6 border-t border-[#a586ff]/10 flex items-center justify-between">
+            <div className="mt-auto pt-6 border-t border-[#a586ff]/10 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2"><div className={`w-2 h-2 rounded-full animate-pulse ${isTyping ? 'bg-[#a586ff]' : 'bg-white/20'}`} /><span className="text-[7px] lg:text-[8px] font-black text-[#a586ff]/40 uppercase tracking-widest">{isTyping ? 'Syncing...' : 'Standby'}</span></div>
               <Zap size={14} className={isTyping ? 'text-[#a586ff]' : 'text-[#a586ff]/20'} />
             </div>
